@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BoxRocket Tool</title>
+
+<style>
+@font-face{
+    font-family: boxrocket;
+    src: url("boxrocket.ttf") format("truetype");
+}
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:40px;
+}
+
+textarea{
+    width:80%;
+    height:140px;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    margin-top:20px;
+    font-size:26px;
+    font-family:boxrocket;
+}
+
+h2{
+    margin-top:60px;
+    font-weight:normal;
+}
+
+.alphabet{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap:8px;
+    width:80%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.charBox{
+    background:#1a1a1a;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:28px;
+    font-family:boxrocket;
+    transition:.15s;
+}
+
+.charBox:hover{
+    background:#3a86ff;
+}
+
+.normal{
+    font-family:Arial !important;
+    opacity:.8;
+}
+
+.preview{
+    margin-top:40px;
+    font-family:boxrocket;
+    font-size:38px;
+}
+
+.result{
+    margin-top:15px;
+    font-size:26px;
+    font-family:Arial;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🚀 BoxRocket Decoder (Live)</h1>
+
+<textarea id="text" placeholder="Text here..."></textarea><br>
+
+<div class="preview" id="preview"></div>
+<div class="result" id="result"></div>
+
+<h2>Upper letters</h2>
+<div class="alphabet" id="upper"></div>
+
+<h2>Lower letters</h2>
+<div class="alphabet" id="lower"></div>
+
+<h2>Numbers</h2>
+<div class="alphabet" id="numbers"></div>
+
+<h2>Special Symbols</h2>
+<div class="alphabet" id="symbols"></div>
+
+<script>
+function insert(char){
+    let t = document.getElementById("text")
+    let s = t.selectionStart
+    let e = t.selectionEnd
+    let v = t.value
+    t.value = v.substring(0,s) + char + v.substring(e)
+    t.focus()
+    t.selectionStart = t.selectionEnd = s + 1
+    liveDecode()
+}
+
+function makeBlock(container, chars, normalList=[]){
+    let div = document.getElementById(container)
+    for(let ch of chars){
+        let box = document.createElement("div")
+        box.className = "charBox"
+        box.innerText = ch
+        if(normalList.includes(ch)) box.classList.add("normal")
+        box.onclick = ()=>insert(ch)
+        div.appendChild(box)
+    }
+}
+
+function liveDecode(){
+    let text = document.getElementById("text").value
+    document.getElementById("preview").innerText = text
+    document.getElementById("result").innerText = "Обычный текст: " + text
+}
+
+document.getElementById("text").addEventListener("input", liveDecode)
+
+let noFontUpper = ["B","G","J","K"]
+let noFontLower = ["o"]
+
+makeBlock("upper","ABCDEFGHIJKLMNOPQRSTUVWXYZ",noFontUpper)
+makeBlock("lower","abcdefghijklmnopqrstuvwxyz",noFontLower)
+makeBlock("numbers","0123456789")
+
+let allSymbols = [
+    "`","~","!","@","#","$","%","^","&","*","(",")","-","_","=","+",
+    "[","]","{","}","\\","|",";",":","'","\"",
+    ",",".","<",">","/","?"
+]
+makeBlock("symbols", allSymbols)
+</script>
+
+</body>
+</html>
